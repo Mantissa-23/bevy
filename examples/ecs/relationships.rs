@@ -69,6 +69,17 @@ fn main() {
         // Simply inserting the `Targeting` component will automatically create and update the `TargetedBy` component on the target entity.
         // We can do this at any point; not just when the entity is spawned.
         commands.entity(alice).insert(Targeting(charlie));
+
+        // Lastly, relationships can be added using the related! macro, which is most useful for
+        // deep nesting or adding many related entities. The related! macro can be invoked
+        // anywhere that a Bundle can be located.
+        commands.spawn(Name::new("Amanda")).insert(
+            related!(TargetedBy[
+                (Name::new("Emily"), related!(TargetedBy[
+                    Name::new("George")
+                ]))
+            ])
+        );
     }
 
     world

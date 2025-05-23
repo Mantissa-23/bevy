@@ -25,6 +25,27 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
         .spawn((
             Sprite::from_image(texture.clone()),
             Transform::from_scale(Vec3::splat(0.75)),
+            // The most compact way to add nested nested children or many
+            // children, is with the children! macro. You can invoke this anywhere that a Bundle
+            // can be located.
+            children![
+                (
+                    Transform::from_xyz(-250.0, 0.0, 0.0).with_scale(Vec3::splat(0.75)),
+                    Sprite {
+                        image: texture.clone(),
+                        color: RED.into(),
+                        ..default()
+                    },
+                ),
+                (
+                    Transform::from_xyz(0.0, -250.0, 0.0).with_scale(Vec3::splat(0.75)),
+                    Sprite {
+                        image: texture.clone(),
+                        color: YELLOW.into(),
+                        ..default()
+                    },
+                ),
+            ],
         ))
         // With that entity as a parent, run a lambda that spawns its children
         .with_children(|parent| {
@@ -79,7 +100,7 @@ fn rotate(
         }
 
         // To demonstrate removing children, we'll remove a child after a couple of seconds.
-        if time.elapsed_secs() >= 2.0 && children.len() == 2 {
+        if time.elapsed_secs() >= 2.0 && children.len() == 4 {
             let child = children.last().unwrap();
             commands.entity(*child).despawn();
         }
